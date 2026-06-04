@@ -1,6 +1,8 @@
-# plan-task — a Claude Code skill
+# plan-task
 
-A portable, project-agnostic [Claude Code](https://claude.com/claude-code) skill that runs non-trivial engineering work through a staged **research → plan → implementation** flow. Work is planned in the open under `docs/`, one folder per task, with a review gate between each stage. Nothing in it is language- or toolchain-specific — the verification gates ("what does *green* mean?") are derived from the target project at runtime.
+A portable skill for AI coding agents that runs non-trivial engineering work through a staged **research → plan → implementation** flow. Work is planned in the open under `docs/`, one folder per task, with a review gate between each stage. Nothing in it is language-, toolchain-, or agent-specific — the verification gates ("what does *green* mean?") are derived from the target project at runtime.
+
+It ships as a `SKILL.md` skill — the same `SKILL.md` + frontmatter convention used by agents such as Claude Code and opencode — so any agent that loads skills can use it, and any agent that doesn't can simply be pointed at the file as guidance.
 
 ## What's here
 
@@ -18,26 +20,23 @@ plan-task/
 
 ## The workflow in one paragraph
 
-A task lives in `docs/<category>/<N>-<slug>/` where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, or `idea`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: the user replies with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks.
+A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, or `idea`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks.
 
 ## Install
 
-Claude Code loads skills from `~/.claude/skills/<name>/`. Symlink it (edits in this repo stay live):
+**As a skill** — drop the `plan-task/` folder into the directory your agent loads skills from. For example, Claude Code reads `~/.claude/skills/<name>/`:
 
 ```sh
-ln -s "$(pwd)/plan-task" ~/.claude/skills/plan-task
+ln -s "$(pwd)/plan-task" ~/.claude/skills/plan-task   # symlink keeps it live
+# or: cp -r plan-task ~/.claude/skills/plan-task
 ```
 
-…or copy it:
+Other agents (opencode and the like) that support the `SKILL.md` convention have their own skills directory — see your tool's docs for the path, then symlink or copy `plan-task/` there. For a single project rather than globally, use that project's local skills directory instead.
 
-```sh
-cp -r plan-task ~/.claude/skills/plan-task
-```
-
-For a single project instead of all of them, install under that repo's `.claude/skills/` rather than `~/.claude/skills/`.
+**As plain guidance** — for any agent without a skills loader, reference or inline `plan-task/SKILL.md` from your project's agent-instructions file (e.g. `AGENTS.md`). The file is self-contained Markdown.
 
 ## Use
 
-Type `/plan-task`, or just start describing non-trivial work and let the skill's description trigger it. It scaffolds the `docs/` folder and writes the first stage, then waits for your review before continuing.
+Invoke it however your agent invokes skills (in Claude Code: `/plan-task`), or just start describing non-trivial work and let the skill's description trigger it. It scaffolds the `docs/` folder and writes the first stage, then waits for your review before continuing.
 
-It defers to a project's own documented workflow (e.g. a `CLAUDE.md` that already prescribes one), so it won't conflict where local conventions already exist.
+It defers to a project's own documented workflow (e.g. an `AGENTS.md` / `CLAUDE.md` that already prescribes one), so it won't conflict where local conventions already exist.

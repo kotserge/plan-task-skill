@@ -1,6 +1,6 @@
 # <Category> - Plan: <Title>
 
-Concrete steps implementing the decisions from `research.md`. Each step is **one commit** and ends green under the project's verification gates (<project's verification gates — e.g. format check, linter, docs build, test suite; fill from CLAUDE.md / the build config>).
+Concrete steps implementing the decisions from `research.md`. Each step is **one commit** and ends green under the project's verification gates (<project's verification gates — e.g. format check, linter, docs build, test suite; fill from the project's agent instructions (AGENTS.md / CLAUDE.md) or build config>).
 
 Decisions baked in (as resolved by the user's `Note:` in `research.md`):
 

@@ -11,7 +11,7 @@ A lightweight, paper-trail-first way to take a non-trivial change from "here's t
 
 Reach for this when a change is big enough that writing it down first pays off: a new feature, a non-obvious bug, a structural refactor, a performance migration, or an idea worth parking. Skip it for one-line fixes, typo corrections, and mechanical edits — those don't need a folder.
 
-If the project's own `CLAUDE.md` or `README` already describes a planning workflow, that document wins. This skill is the portable default; defer to local convention where they differ (especially folder names and the verification gates).
+If the project's own agent instructions (`AGENTS.md`, `CLAUDE.md`) or `README` already describe a planning workflow, that document wins. This skill is the portable default; defer to local convention where they differ (especially folder names and the verification gates).
 
 ## Directory convention
 
@@ -65,7 +65,7 @@ Each stage is a **review gate**. Write the stage, then stop and let the user res
 
 `plan.md` steps and migration `results.md` both assert the change "ends green." **What green means is per-project** — do not assume any particular toolchain. At the start of a task, determine the gates from the project itself, in this order of preference:
 
-1. A `CLAUDE.md` / `AGENTS.md` / `CONTRIBUTING.md` that lists the build/lint/test commands.
+1. The project's agent instructions or contributor docs (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) that list the build/lint/test commands.
 2. The build manifest and CI config (e.g. `Makefile`, `package.json` scripts, `.github/workflows/`, `Cargo.toml`, `pyproject.toml`).
 3. Ask the user if it's genuinely unclear.
 
