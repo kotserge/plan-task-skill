@@ -1,6 +1,6 @@
 ---
 name: plan-task
-description: Plan non-trivial engineering work in the open using a staged research → plan → implementation flow backed by per-task docs/ folders, reviewed by the user between stages. Use when starting a feature, bug fix, refactor, or migration big enough to warrant a written plan before coding, or when capturing a shelved idea. Provides per-category Markdown templates (description/research/plan, plus why/results for migrations) and the review-gate conventions that tie them together.
+description: Plan non-trivial engineering work in the open using a staged research → plan → implementation flow backed by per-task docs/ folders, reviewed by the user between stages. Use when starting a feature, bug fix, refactor, or migration big enough to warrant a written plan before coding, when capturing a shelved idea, or when auditing an existing body of code (a findings-based review with follow-up passes). Provides per-category Markdown templates (description/research/plan, why/results for migrations, review/follow-up for reviews) and the review-gate conventions that tie them together.
 ---
 
 # plan-task
@@ -19,7 +19,7 @@ If the project's own agent instructions (`AGENTS.md`, `CLAUDE.md`) or `README` a
 docs/<category>/<N>-<slug>/
 ```
 
-- `<category>` ∈ `bug` | `feature` | `refactor` | `test` | `migration` | `idea`
+- `<category>` ∈ `bug` | `feature` | `refactor` | `test` | `migration` | `idea` | `review`
 - `<N>` numbers the task **within its category** (e.g. `feature/9-…`, `migration/2-…`)
 - `<slug>` is kebab-case and short
 
@@ -32,6 +32,7 @@ Before creating a folder, list the existing ones in that category (`ls docs/<cat
 | `bug`, `feature`, `refactor`, `test` | `description.md` → `research.md` → `plan.md` |
 | `migration` | `why.md` → `research.md` → `plan.md` → `results.md` |
 | `idea` | `description.md` only |
+| `review` | `review.md` → `followup-2.md` → `followup-3.md` → … (one file per pass; see *Reviews*) |
 
 Templates for each live next to this file in `templates/`:
 
@@ -41,6 +42,8 @@ Templates for each live next to this file in `templates/`:
 - `templates/migration-why.md` — the motivating observation (bench data, complaint, or a discovered gap)
 - `templates/migration-results.md` — post-implementation measurements that close the loop on `why.md`
 - `templates/idea-description.md` — a shelved direction: use case, open questions, why it's parked
+- `templates/review.md` — first-pass audit: numbered, severity-ranked findings with `file:line` evidence
+- `templates/review-followup.md` — later passes: verdict, fixes verified against the diff, new findings, residual-risk table
 
 Copy the matching template into the new folder, then fill it in. Keep the section headings; delete the `<…>` placeholders and any `(optional)` section you don't need.
 
@@ -52,6 +55,15 @@ Each stage is a **review gate**. Write the stage, then stop and let the user res
 2. **Research.** Write `research.md`: the after-state, what's in/out of scope, and an **Open decisions** section. Each decision lays out options and ends with a **Recommendation**. Stop for review — the user replies *inline* (see below).
 3. **Plan.** Once decisions are settled, write `plan.md`: concrete, ordered steps derived from the resolved research. Each step is **one commit** and ends green under the project's verification gates. Stop for review.
 4. **Implement.** Follow the approved `plan.md`, one commit per step. (Migrations then add `results.md` — measurements that answer the question `why.md` posed.)
+
+## Reviews (a different loop)
+
+A `review` task audits an existing body of code — a fork, a PR wave, a subsystem — rather than planning new work. It skips description/research/plan; each pass is one file, and the gate between passes is the *author's response*, not a plan approval.
+
+1. **First pass — `review.md`.** Strictly read-only: no source file is modified. Survey what is actually under review before judging it, then report numbered findings (`F1`, `F2`, …; sub-defects lettered, `F3(b)`). Each finding states its claim in the title and carries the full anatomy: *Impact / summary* ending in a **Confirmed**/**Likely** status, *Source* (`file:line` plus the minimal code quote), *Explanation and impact* (mechanism, then blast radius), and *Proposed fix* (code sketch, reasoning, a verification step, the re-run cost). Close with a suggested order of work, what was checked and found sound, and the files read. Stop — the user decides which findings to forward to the author.
+2. **Follow-up passes — `followup-2.md`, `followup-3.md`, ….** When the author responds with changes, review the new commit range: a one-paragraph verdict up front; fixes verified against the diff, never trusted from the commit message; new findings under a fresh ID prefix per pass (`R1`… for the second, the next unused letter after that) so IDs stay unique across the folder; and a residual-risk table covering *every* prior finding, so nothing drops off the record silently. Previous passes are never edited — the folder is the record of the exchange.
+
+Two conventions carry the weight: **severity is defined in consequences for this project** (e.g. Critical = "invalidates results already produced"), not generic labels; and **every claim is anchored** — a finding without `file:line` evidence is an opinion.
 
 ## Conventions that make it work
 

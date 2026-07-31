@@ -16,11 +16,13 @@ plan-task/
     migration-why.md    # the motivating observation (data / complaint / gap)
     migration-results.md# before/after measurements closing the loop
     idea-description.md # a shelved direction, with promotion criteria
+    review.md           # first-pass code audit: numbered, severity-ranked findings w/ file:line evidence
+    review-followup.md  # later passes: verdict, fixes verified against the diff, residual-risk table
 ```
 
 ## The workflow in one paragraph
 
-A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, or `idea`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks.
+A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, `idea`, or `review`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks. A `review` runs a different loop: a read-only `review.md` of numbered, severity-ranked findings anchored to `file:line`, then one `followup-<M>.md` per wave of the author's changes — fixes verified against the diff, new findings under a fresh ID prefix, and a residual-risk table over every prior finding.
 
 ## Install
 
