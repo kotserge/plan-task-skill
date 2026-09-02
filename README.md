@@ -1,8 +1,8 @@
 # plan-task
 
-A portable skill for AI coding agents that runs non-trivial engineering work through a staged **research → plan → implementation** flow. Work is planned in the open under `docs/`, one folder per task, with a review gate between each stage. Nothing in it is language-, toolchain-, or agent-specific — the verification gates ("what does *green* mean?") are derived from the target project at runtime.
+A portable skill for AI coding agents that runs non-trivial engineering work through a staged **research → plan → implementation** flow. Work is planned in the open under `docs/`, one folder per task, with a review gate between each stage. Nothing in it is language-, toolchain-, or agent-specific -- the verification gates are derived from the target project at runtime.
 
-It ships as a `SKILL.md` skill — the same `SKILL.md` + frontmatter convention used by agents such as Claude Code and opencode — so any agent that loads skills can use it, and any agent that doesn't can simply be pointed at the file as guidance.
+It ships as a `SKILL.md` skill — the same `SKILL.md` + frontmatter convention used by agents such as Claude Code and opencode -- so any agent that loads skills can use it, and any agent that doesn't can simply be pointed at the file as guidance.
 
 ## What's here
 
@@ -20,7 +20,7 @@ plan-task/
     review-followup.md  # later passes: verdict, fixes verified against the diff, residual-risk table
 ```
 
-## The workflow in one paragraph
+## Workflow
 
 A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, `idea`, or `review`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks. Implementation runs lead-and-workers: the model that planned stays in charge, and each step's `Executor:` line — decided and reviewed with the plan — says whether the lead does it or hands it to a worker sized to the step's complexity; workers return diffs, the lead verifies and commits. A `review` runs a different loop: a read-only `review.md` of numbered, severity-ranked findings anchored to `file:line`, then one `followup-<M>.md` per wave of the author's changes — fixes verified against the diff, new findings under a fresh ID prefix, and a residual-risk table over every prior finding.
 
