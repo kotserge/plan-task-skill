@@ -53,7 +53,7 @@ Note:
 
 ## Sequencing notes / risk
 
-<Dependencies between decisions, what must land first, and the riskiest step. Call out anything observable to downstream users — those changes are cheapest to make now.>
+<Dependencies between decisions, what must land first, and the riskiest step — the plan's `Executor:` choice for that step follows from it. Call out anything observable to downstream users — those changes are cheapest to make now.>
 
 ## What plan.md will contain
 

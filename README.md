@@ -12,7 +12,7 @@ plan-task/
   templates/
     description.md      # bug/feature/refactor/test — the problem statement
     research.md         # analysis + numbered open decisions w/ inline-Note review slots
-    plan.md             # ordered steps, one commit each, project's gates
+    plan.md             # ordered steps, one commit each, executor per step, project's gates
     migration-why.md    # the motivating observation (data / complaint / gap)
     migration-results.md# before/after measurements closing the loop
     idea-description.md # a shelved direction, with promotion criteria
@@ -22,7 +22,7 @@ plan-task/
 
 ## The workflow in one paragraph
 
-A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, `idea`, or `review`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks. A `review` runs a different loop: a read-only `review.md` of numbered, severity-ranked findings anchored to `file:line`, then one `followup-<M>.md` per wave of the author's changes — fixes verified against the diff, new findings under a fresh ID prefix, and a residual-risk table over every prior finding.
+A task lives in `docs/<category>/<N>-<slug>/`, where `<category>` is one of `bug`, `feature`, `refactor`, `test`, `migration`, `idea`, or `review`. Most categories use three files written and reviewed in order — `description.md` → `research.md` → `plan.md`; migrations add `why.md` up front and `results.md` at the end; an `idea` is a single `description.md` holding pen. Each stage stops for review: you reply with inline `Note:` lines in the Markdown, which become the binding decisions. Every `plan.md` step is one commit that ends green under the project's own checks. Implementation runs lead-and-workers: the model that planned stays in charge, and each step's `Executor:` line — decided and reviewed with the plan — says whether the lead does it or hands it to a worker sized to the step's complexity; workers return diffs, the lead verifies and commits. A `review` runs a different loop: a read-only `review.md` of numbered, severity-ranked findings anchored to `file:line`, then one `followup-<M>.md` per wave of the author's changes — fixes verified against the diff, new findings under a fresh ID prefix, and a residual-risk table over every prior finding.
 
 ## Install
 
@@ -40,5 +40,9 @@ Other agents (opencode and the like) that support the `SKILL.md` convention have
 ## Use
 
 Invoke it however your agent invokes skills (in Claude Code: `/plan-task`), or just start describing non-trivial work and let the skill's description trigger it. It scaffolds the `docs/` folder and writes the first stage, then waits for your review before continuing.
+
+## Lead and workers
+
+The planning stages want the strongest model you have — that is where the judgement goes. Implementation doesn't always: once `plan.md` is approved, the same model acts as lead and delegates steps to worker subagents where the host supports them, choosing a cheaper model and lower effort for mechanical steps and a stronger one for cross-cutting or risky ones. The tiers (`worker/light`, `worker/standard`, `worker/strong`, or `lead`) are named per step in the plan and reviewed with it; the mapping from tier to a concrete model is host-specific (Claude Code's is in `SKILL.md`). Workers return a diff, never a commit — the lead re-runs the gates and commits. On a host without subagents the lead simply implements every step itself.
 
 It defers to a project's own documented workflow (e.g. an `AGENTS.md` / `CLAUDE.md` that already prescribes one), so it won't conflict where local conventions already exist.
