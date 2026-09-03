@@ -69,7 +69,7 @@ Once `plan.md` is approved, the model that wrote it changes role from author to 
 | `worker/strong` | cross-cutting, or the step `research.md` flagged as riskiest; needs real reasoning within the plan's bounds | strongest model, high effort |
 | `lead` | anything that needs the planning context — reconciling a surprise against the decisions, public-API shape, the step that would be hardest to brief | the lead itself |
 
-Tiers pair a model with a default effort; when the two diverge (a small but subtle change), say so explicitly — `worker/standard, high effort`. When in doubt, go one tier up: a worker that fails a gate costs a re-run; a worker that quietly does the wrong thing costs a review cycle. Concrete model names are host-specific — map the tiers in the host's own configuration (see the aside below for Claude Code).
+Tiers pair a model with a default effort; when the two diverge (a small but subtle change), say so explicitly — `worker/standard, high effort`. When in doubt, go one tier up: a worker that fails a gate costs a re-run; a worker that quietly does the wrong thing costs a review cycle. Tiers are not pinned to model names: the lead maps them onto whatever models the host offers at implementation time — cheapest for light, most capable for strong.
 
 **The brief.** A fresh worker has none of the conversation. Its prompt is assembled from the plan and must be self-contained:
 
@@ -82,7 +82,7 @@ Tiers pair a model with a default effort; when the two diverge (a small but subt
 
 **Parallelism.** Steps run sequentially in the main tree by default — each commit is the next step's baseline. Fan out only the steps the plan's *Sequencing rationale* marks as independent; give each parallel worker its own isolated copy (a worktree, where the host offers it), then land the results in plan order so the history still reads one step per commit.
 
-Host aside (Claude Code): workers are the `Agent` tool, and its `model` argument maps the tiers — `haiku` → light, `sonnet` → standard, `opus` / `fable` → strong. A `fork` inherits the full conversation and always runs on the lead's model; use it for a step that needs the planning context but is too mechanical for the lead's attention. Effort is not a per-call knob there: state it in the brief, or pin it in a project agent definition (`.claude/agents/<name>.md` frontmatter) and name that agent as the executor instead.
+Host aside (Claude Code): workers are the `Agent` tool, and its `model` argument picks the worker's model. Before the first delegation, the lead checks which models the tool accepts and maps the tiers onto them itself. A `fork` inherits the full conversation and always runs on the lead's model; use it for a step that needs the planning context but is too mechanical for the lead's attention. Effort is not a per-call knob there: state it in the brief, or pin it in a project agent definition (`.claude/agents/<name>.md` frontmatter) and name that agent as the executor instead.
 
 ## Reviews (a different loop)
 
